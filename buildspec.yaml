@@ -6,7 +6,6 @@ env:
     REPO_NAME: "aws-spring"
     IMAGE_TAG: "latest"
     ACCOUNT_ID: "140023370575"
-  privileged: true
 
 phases:
   pre_build:
