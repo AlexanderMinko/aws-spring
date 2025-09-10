@@ -23,7 +23,7 @@ public class AwsSpringApplication {
     @GetMapping("/hello")
     Map<String, String> hello() throws UnknownHostException {
         String inetAddress = InetAddress.getLocalHost().getHostAddress();
-        return Map.of("InstanceIP: ", inetAddress);
+        return Map.of("InstanceIP", inetAddress);
     }
 
 //    @PostMapping("/user")
