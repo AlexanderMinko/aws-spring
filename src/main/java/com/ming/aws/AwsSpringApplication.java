@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.InetAddress;
-import java.util.List;
+import java.net.UnknownHostException;
 import java.util.Map;
 
 @SpringBootApplication
@@ -21,13 +21,9 @@ public class AwsSpringApplication {
     }
 
     @GetMapping("/hello")
-    Map<String, String> hello() {
-        try {
-            String inetAddress = InetAddress.getLocalHost().getHostAddress();
-            return Map.of("InstanceIP", inetAddress);
-        } catch (Exception e) {
-            return Map.of("InstanceIP", e.getMessage());
-        }
+    Map<String, String> hello() throws UnknownHostException {
+        String inetAddress = InetAddress.getLocalHost().getHostAddress();
+        return Map.of("InstanceIP", inetAddress);
     }
 
 //    @PostMapping("/user")

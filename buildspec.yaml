@@ -1,0 +1,32 @@
+version: 0.2
+
+env:
+  variables:
+    AWS_REGION: "eu-central-1"
+    REPO_NAME: "aws-spring"
+    IMAGE_TAG: "latest"
+    ACCOUNT_ID: "140023370575"
+  privileged: true
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+      - REPO_URI=$ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$REPO_NAME
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+      - echo Repo URI is $REPO_URI
+  build:
+    commands:
+      - echo Building Maven project...
+      - mvn clean package -DskipTests
+      - echo Building Docker image...
+      - docker build -t $REPO_URI:$IMAGE_TAG .
+  post_build:
+    commands:
+      - echo Pushing Docker image to ECR...
+      - docker push $REPO_URI:$IMAGE_TAG
+#      - echo Writing image definitions file for CodePipeline...
+#      - printf '[{"name":"spring-app","imageUri":"%s"}]' $REPO_URI:$IMAGE_TAG > imagedefinitions.json
+#artifacts:
+#  files: imagedefinitions.json
